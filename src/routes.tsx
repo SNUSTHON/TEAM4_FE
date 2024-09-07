@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/home';
 import Upload from './pages/upload';
 import Galary from './pages/galary';
-import Loginpage from './components/Login/Loginpage';
+import Loginpage from './components/Loginpage';
 
 export default function routes() {
   return (

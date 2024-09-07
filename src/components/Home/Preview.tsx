@@ -9,9 +9,9 @@ interface PreviewProps {
 export default function Preview(props: PreviewProps) {
   return (
     <div>
-      <div className='w-100% h-56 px-5 py-5 bg-gradient-to-b from-[#3a4155] to-[#1f2431] rounded-lg shadow border border-white justify-start items-center gap-2.5 flex'>
-        <div className='w-100% flex-col justify-start items-center gap-4 inline-flex'>
-          <div className='h-40 flex-col justify-start items-center gap-3 flex'>
+      <div className='w-100% h-56 px-5 py-5 bg-gradient-to-b from-[#3a4155] to-[#1f2431] rounded-lg shadow border border-white justify-center items-center gap-2.5 flex'>
+        <div className='w-100% flex-col justify-center items-center gap-4 inline-flex'>
+          <div className='h-40 flex-col justify-center items-center gap-3 flex'>
             <img
               className='self-stretch h-24 rounded-full border border-white/60'
               src={props.image}

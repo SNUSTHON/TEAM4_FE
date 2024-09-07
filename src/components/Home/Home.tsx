@@ -56,7 +56,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className='w-100% left-[16px] right-[16px] top-[180px] absolute grid grid-cols-2 gap-2'>
+      <div className='w-100% left-[16px] right-[16px] top-[180px] absolute grid grid-cols-2  gap-2'>
         {profiles.map((profile) => (
           <div className=''>
             <Preview
