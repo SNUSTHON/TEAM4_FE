@@ -1,4 +1,4 @@
-import Main from '../components/Uploads/Uploads';
+import Main from '../components/Upload/Upload';
 
 export default function Home() {
   return (
