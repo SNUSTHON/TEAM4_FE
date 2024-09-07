@@ -10,7 +10,7 @@ export default function Home() {
       name: '홍길동',
       relationship: '친구',
       birthdate: '1990.01.01',
-      deathDate: '2020.01.01',
+      deathdate: '2020.01.01',
     },
     {
       id: 2,
@@ -18,7 +18,7 @@ export default function Home() {
       name: '김철수',
       relationship: '동료',
       birthdate: '1985.05.12',
-      deathDate: '2019.08.20',
+      deathdate: '2019.08.20',
     },
     {
       id: 3,
@@ -26,7 +26,7 @@ export default function Home() {
       name: '엥',
       relationship: '엥',
       birthdate: '1232.12.12',
-      deathDate: '1232.13.13',
+      deathdate: '1232.13.13',
     },
     // 더 많은 프로필 추가 가능
   ];
@@ -65,7 +65,7 @@ export default function Home() {
               name={profile.name}
               relationship={profile.relationship}
               birthdate={profile.birthdate}
-              deathDate={profile.deathDate}
+              deathdate={profile.deathdate}
             />
           </div>
         ))}
