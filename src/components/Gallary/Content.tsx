@@ -37,11 +37,16 @@ const Content: React.FC<ContentProps> = ({
         </div>
       ) : !isPhotoTabActive && videos.length === 0 ? (
         <div className='w-full flex justify-center items-center h-[202px]'>
-          <div className='w-[343px] h-[202px] px-[70px] py-[88px] bg-[#414758] rounded-lg flex justify-center items-center'>
-            <div className='text-center text-white/60 text-base font-medium font-["Pretendard Variable"] leading-none'>
+          {/* <div className='w-[343px] h-[202px] px-[70px] py-[88px] bg-[#414758] rounded-lg flex justify-center items-center'> */}
+            {/* <div className='text-center text-white/60 text-base font-medium font-["Pretendard Variable"] leading-none'>
               영상이 만들어지고 있어요
-            </div>
-          </div>
+            </div> */}
+ <video
+            src="http://10.50.33.214:8080/video/birthday.mp4"
+            controls // 비디오 컨트롤 표시
+            className='w-full h-full object-cover rounded-lg'
+          />
+          {/* </div> */}
         </div>
       ) : (
         <div className='flex flex-wrap gap-2'>
@@ -58,7 +63,7 @@ const Content: React.FC<ContentProps> = ({
               ) : (
                 <video
                   key={item.id}
-                  src={item.url}
+                  src="http://10.50.33.214:8080/video/birthday.mp4"
                   controls
                   className='w-[100px] h-[100px] object-cover'
                 >
