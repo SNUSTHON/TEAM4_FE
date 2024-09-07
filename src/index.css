@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'NotoSerifKR';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NotoSerifKR.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: 'NotoSerifKR', serif;
+}

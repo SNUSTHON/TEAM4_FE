@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import adding from '../../assets/addingbutton.svg';
 
 export default function Emptyview() {
   const navigate = useNavigate();
@@ -11,9 +12,7 @@ export default function Emptyview() {
       onClick={handleClick}
     >
       <div className='w-100% flex-col justify-center items-center gap-4 inline-flex'>
-        <div className='w-12 h-12 bg-[#f9e55a] rounded-full shadow flex justify-center items-center'>
-          <span className='text-3xl text-[#242424] font-bold mb-2'>+</span>
-        </div>
+        <img src={adding} alt='adding button' />
         <div className="self-stretch text-center text-white text-base font-medium font-['Pretendard'] leading-none">
           보고싶은 사람
         </div>
