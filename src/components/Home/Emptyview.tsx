@@ -6,7 +6,7 @@ export default function Emptyview() {
           <span className='text-3xl text-[#242424] font-bold mb-2'>+</span>
         </div>
         <div className="self-stretch text-center text-white text-base font-medium font-['Pretendard'] leading-none">
-          별 추가
+          보고싶은 사람
         </div>
       </div>
     </div>
