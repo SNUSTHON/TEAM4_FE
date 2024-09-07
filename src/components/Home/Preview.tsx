@@ -3,7 +3,7 @@ interface PreviewProps {
   name: string;
   relationship: string;
   birthdate: string;
-  deathDate: string;
+  deathdate: string;
 }
 
 export default function Preview(props: PreviewProps) {
@@ -26,7 +26,7 @@ export default function Preview(props: PreviewProps) {
             </div>
           </div>
           <div className="text-white/50 text-xs font-light font-['Pretendard'] leading-3">
-            {props.birthdate} - {props.deathDate}
+            {props.birthdate} - {props.deathdate}
           </div>
         </div>
       </div>
