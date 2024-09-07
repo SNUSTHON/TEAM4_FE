@@ -1,31 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
-const FileUploadForm = () => {
+export default function FileUploadForm() {
   const [name, setName] = useState('');
-  const [keywords, setKeywords] = useState('');
-  const [birthdate, setBirthdate] = useState('');
-  const [deathDate, setDeathDate] = useState('');
   const [relationship, setRelationship] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [birthdate, setBirthdate] = useState('');
+  const [deathdate, setDeathdate] = useState('');
+  const [profileImage, setProfileImage] = useState<File | null>(null); // 프로필 사진 상태
+  const [profilePreviewUrl, setProfilePreviewUrl] = useState<string | null>(
+    null
+  ); // 프로필 사진 미리보기
+  const [isFormComplete, setIsFormComplete] = useState(false);
+
+  useEffect(() => {
+    if (name && relationship && birthdate && deathdate && profileImage) {
+      setIsFormComplete(true); // 모든 필드가 입력되면 true
+    } else {
+      setIsFormComplete(false); // 하나라도 비어 있으면 false
+    }
+  }, [name, relationship, birthdate, deathdate, profileImage]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFile = e.target.files[0];
+      setProfileImage(selectedFile);
+      setProfilePreviewUrl(URL.createObjectURL(selectedFile)); // 선택한 파일 미리보기
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // FormData 객체 생성
     const formData = new FormData();
     formData.append('name', name);
-    formData.append('keywords', keywords);
-    formData.append('birthdate', birthdate);
-    formData.append('deathDate', deathDate);
     formData.append('relationship', relationship);
+    formData.append('birthdate', birthdate);
+    formData.append('deathdate', deathdate);
+    if (profileImage) {
+      formData.append('profileImage', profileImage); // 프로필 이미지 추가
+    }
 
-    // 여러 파일을 FormData에 추가
-    files.forEach((file, index) => {
-      formData.append(`file${index + 1}`, file);
-    });
-
-    // 예시로 Fetch API를 통해 서버에 데이터를 POST로 전송
     try {
       const response = await fetch('https://your-api-endpoint.com/upload', {
         method: 'POST',
@@ -34,134 +48,107 @@ const FileUploadForm = () => {
 
       if (response.ok) {
         console.log('Form submitted successfully');
+        handleClick();
       } else {
         console.log('Error submitting form');
       }
     } catch (error) {
       console.error('Error:', error);
+      handleClick();
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-      setFiles(selectedFiles);
-
-      // 미리보기 URL 생성
-      const urls = selectedFiles.map((file) => URL.createObjectURL(file));
-      setPreviewUrls(urls);
-    }
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/home');
   };
 
   return (
-    <div>
-      <div className='text-white'>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor='name'>Name:</label>
-            <input
-              type='text'
-              id='name'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+    <form
+      onSubmit={handleSubmit}
+      className='w-screen min-h-screen flex flex-col justify-center items-center bg-[#1a1e29]'
+    >
+      {/* 프로필 이미지 업로드 */}
+      <div className='relative w-[118px] h-[118px] mb-6'>
+        <label htmlFor='profile-image-upload'>
+          <div className='w-full h-full bg-[#727786] rounded-full border border-[#a4aab9] flex justify-center items-center cursor-pointer'>
+            {profilePreviewUrl ? (
+              <img
+                src={profilePreviewUrl}
+                alt='Profile Preview'
+                className='w-full h-full object-cover rounded-full'
+              />
+            ) : (
+              <div className='text-white text-base'>프로필 이미지</div>
+            )}
           </div>
-
-          <div>
-            <label>Keywords:</label>
-            <div>
-              <label htmlFor='smile'>
-                <input
-                  type='radio'
-                  id='smile'
-                  name='keywords'
-                  value='smile'
-                  checked={keywords === 'smile'}
-                  onChange={(e) => setKeywords(e.target.value)}
-                />
-                Smile
-              </label>
-            </div>
-            <div>
-              <label htmlFor='talking'>
-                <input
-                  type='radio'
-                  id='talking'
-                  name='keywords'
-                  value='talking'
-                  checked={keywords === 'talking'}
-                  onChange={(e) => setKeywords(e.target.value)}
-                />
-                Talking
-              </label>
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor='birthdate'>Birthdate:</label>
-            <input
-              type='date'
-              id='birthdate'
-              value={birthdate}
-              onChange={(e) => setBirthdate(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label htmlFor='deathDate'>Memorial Date:</label>
-            <input
-              type='date'
-              id='deathDate'
-              value={deathDate}
-              onChange={(e) => setDeathDate(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label htmlFor='relationship'>Relationship:</label>
-            <input
-              type='text'
-              id='relationship'
-              value={relationship}
-              onChange={(e) => setRelationship(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label htmlFor='file'>Upload files:</label>
-            <input
-              type='file'
-              id='file'
-              accept='image/*'
-              multiple // 여러 파일을 선택할 수 있도록 multiple 속성 추가
-              onChange={handleFileChange}
-            />
-          </div>
-
-          {/* 미리보기 섹션 */}
-          <div>
-            <h3>Selected Images Preview:</h3>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              {previewUrls.map((url, index) => (
-                <img
-                  key={index}
-                  src={url}
-                  alt={`Preview ${index + 1}`}
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    objectFit: 'cover',
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <button type='submit'>Submit</button>
-        </form>
+        </label>
+        <input
+          id='profile-image-upload'
+          type='file'
+          accept='image/*'
+          className='hidden'
+          onChange={handleFileChange}
+        />
       </div>
-    </div>
-  );
-};
 
-export default FileUploadForm;
+      {/* 성함 입력 */}
+      <div className='w-11/12 max-w-md flex flex-col items-center gap-6'>
+        <div className='self-stretch flex-col justify-start items-start gap-3.5'>
+          <label className='text-white text-base font-medium'>성함</label>
+          <input
+            type='text'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className='w-full px-4 py-2 bg-[#414758] rounded-lg border border-[#7d818f] text-white'
+            placeholder='홍길동'
+          />
+        </div>
+
+        {/* 관계 입력 */}
+        <div className='self-stretch flex-col justify-start items-start gap-3.5'>
+          <label className='text-white text-base font-medium'>관계</label>
+          <input
+            type='text'
+            value={relationship}
+            onChange={(e) => setRelationship(e.target.value)}
+            className='w-full px-4 py-2 bg-[#414758] rounded-lg border border-[#7d818f] text-white'
+            placeholder='친구'
+          />
+        </div>
+
+        {/* 생년월일 입력 */}
+        <div className='self-stretch flex-col justify-start items-start gap-3.5'>
+          <label className='text-white text-base font-medium'>생년월일</label>
+          <input
+            type='date'
+            value={birthdate}
+            onChange={(e) => setBirthdate(e.target.value)}
+            className='w-full px-4 py-2 bg-[#414758] rounded-lg border border-[#7d818f] text-white'
+          />
+        </div>
+
+        {/* 추모 날짜 입력 */}
+        <div className='self-stretch flex-col justify-start items-start gap-3.5'>
+          <label className='text-white text-base font-medium'>추모 날짜</label>
+          <input
+            type='date'
+            value={deathdate}
+            onChange={(e) => setDeathdate(e.target.value)}
+            className='w-full px-4 py-2 bg-[#414758] rounded-lg border border-[#7d818f] text-white'
+          />
+        </div>
+      </div>
+
+      <button
+        type='submit'
+        className={`mt-8 px-8 py-3 rounded-lg font-semibold ${
+          isFormComplete ? 'bg-[#FAE65B] text-black' : 'bg-[#a09647] text-black'
+        }`}
+        disabled={!isFormComplete} // 모든 필드가 입력되지 않으면 버튼 비활성화
+      >
+        보고싶은 사람 등록하기
+      </button>
+    </form>
+  );
+}
