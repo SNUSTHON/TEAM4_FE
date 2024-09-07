@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import { Media } from './Types';
 import Header from './Header';
 import Tabs from './Tabs';
@@ -22,17 +21,18 @@ export default function Gallery() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isRotated, setIsRotated] = useState(false);
 
+  // 사진과 비디오 불러오는 부분은 그대로 유지
   useEffect(() => {
+    // 초기 데이터를 로드하는 부분은 이대로 유지
     const fetchMedia = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const [photosResponse, videosResponse] = await Promise.all([
-          axios.get('/api/image/deceased'),
-          axios.get('/api/video'),
-        ]);
-        setPhotos(photosResponse.data.photos || []);
-        setVideos(videosResponse.data.videos || []);
+        // 이 부분은 API 요청 없이 초기화
+        const initialPhotos: Media[] = []; // 초기 사진 데이터를 설정
+        const initialVideos: Media[] = []; // 초기 비디오 데이터를 설정
+        setPhotos(initialPhotos);
+        setVideos(initialVideos);
       } catch (error) {
         console.error('Error fetching media:', error);
         setError('Failed to load media. Please try again later.');
@@ -43,64 +43,57 @@ export default function Gallery() {
     fetchMedia();
   }, []);
 
+  // 파일을 선택했을 때 API 없이 바로 추가
   const handleMediaUpload = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
       if (files) {
         setIsLoading(true);
         setError(null);
-        const uploadPromises = Array.from(files).map(async (file) => {
-          const formData = new FormData();
-          formData.append('photo', file);
-          try {
-            const response = await axios.post('/api/image', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-              },
-            });
-            return response.data;
-          } catch (error) {
-            console.error('Error uploading photo:', error);
-            return null;
-          }
+
+        const selectedPhotos = Array.from(files).map((file) => {
+          // 여기서 파일을 미디어 객체로 변환 (필요에 따라 Media 타입 조정 가능)
+          const newPhoto: Media = {
+            id: URL.createObjectURL(file), // 임시로 파일 URL을 사용 (id로 가정)
+            url: URL.createObjectURL(file), // 파일의 로컬 URL을 미리보기 용으로 사용
+            name: file.name,
+          };
+          return newPhoto;
         });
 
-        try {
-          const uploadedPhotos = await Promise.all(uploadPromises);
-          setPhotos((prevPhotos) => [
-            ...prevPhotos,
-            ...uploadedPhotos.filter((photo): photo is Media => photo !== null),
-          ]);
-        } catch (error) {
-          console.error('Error uploading photos:', error);
-          setError('Failed to upload photos. Please try again.');
-        } finally {
-          setIsLoading(false);
-        }
+        // 선택된 사진들을 추가
+        setPhotos((prevPhotos) => [...prevPhotos, ...selectedPhotos]);
+
+        setIsLoading(false);
       }
     },
     []
   );
 
+  // 탭 변경 처리
   const handleTabChange = useCallback((type: 'photo' | 'video') => {
     setIsPhotoTabActive(type === 'photo');
   }, []);
 
+  // 사진을 클릭하여 확대
   const handlePhotoClick = useCallback((photo: Media) => {
     setSelectedPhoto(photo);
   }, []);
 
+  // 확대된 사진 보기 닫기
   const handleCloseEnlargedView = useCallback(() => {
     setSelectedPhoto(null);
   }, []);
 
+  // 팝업 열기/닫기 및 버튼 회전 처리
   const togglePopup = useCallback(() => {
     setIsPopupVisible((prevState) => !prevState);
     setIsRotated((prevState) => !prevState);
   }, []);
 
+  // 비디오 생성 페이지로 이동
   const handleVideoCreation = useCallback(() => {
-    navigate('/create'); // Navigate to the video creation page
+    navigate('/create'); // 비디오 생성 페이지로 이동
   }, [navigate]);
 
   if (isLoading) {
